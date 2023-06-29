@@ -8,7 +8,7 @@ import torchvision
 from torchvision.ops import misc as misc_nn_ops
 #from torchvision.ops import MultiScaleRoIAlign
 from poolers import MultiScaleRoIAlign
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 from generalized_rcnn import GeneralizedRCNN
 from rpn import AnchorGenerator, RPNHead, RegionProposalNetwork
 from roi_head import RoIHeads

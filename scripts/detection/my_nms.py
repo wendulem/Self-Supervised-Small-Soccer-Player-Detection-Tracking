@@ -80,8 +80,8 @@ def batched_nms(boxes, scores, idxs, iou_threshold, use_soft_nms):
         return keep
     else :
         boxes, scores = py_cpu_soft_nms(boxes_for_nms, scores, iou_thr=iou_threshold)
-        labels = torch.ones_like(scores).to(torch.device('cuda'))
-        keep = torch.tensor([i for i in range(len(labels))]).to(torch.device('cuda'))
+        labels = torch.ones_like(scores) # .to(torch.device('cuda'))
+        keep = torch.tensor([i for i in range(len(labels))]) # .to(torch.device('cuda'))
         return boxes, scores, labels, keep
 
 
@@ -169,7 +169,7 @@ def py_cpu_soft_nms(dets, scores, method='gaussian', iou_thr=0.3, sigma=0.4, sco
         dets = dets[retained_idx + 1, :]
 
     out = np.vstack(retained_box)
-    boxes = torch.tensor(out[:,:-1]).to(torch.device('cuda'))
-    scores = torch.tensor(out[:,-1]).to(torch.device('cuda'))
+    boxes = torch.tensor(out[:,:-1]) # .to(torch.device('cuda'))
+    scores = torch.tensor(out[:,-1]) # .to(torch.device('cuda'))
 
     return boxes, scores

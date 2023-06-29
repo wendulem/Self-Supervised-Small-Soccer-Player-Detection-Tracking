@@ -96,8 +96,8 @@ if __name__ == '__main__':
                                                   False, False, hparams.detection_score_thres, False,
                                                   hparams.use_soft_nms, anchor_sizes=hparams.anchor_sizes, use_context=hparams.use_context,
                                                   nms_thres=hparams.nms_thres, use_track_branch=hparams.use_track_branch_model)
-            model_detection.load_state_dict(torch.load(hparams.checkpoint))
-            model_detection.to(torch.device('cuda'))
+            model_detection.load_state_dict(torch.load(hparams.checkpoint, map_location=torch.device('cpu')))
+            model_detection.to(torch.device('cpu'))
             model_detection.eval()
         else:
             model_detection = hparams.current_model_detection
@@ -113,8 +113,8 @@ if __name__ == '__main__':
                                                         hparams.use_soft_nms, anchor_sizes=hparams.anchor_sizes,
                                                         use_context=hparams.use_context, nms_thres=hparams.nms_thres,
                                                         use_track_branch=hparams.use_track_branch_model)
-                visual_feat_model.load_state_dict(torch.load(hparams.checkpoint))
-                visual_feat_model.to(torch.device('cuda'))
+                visual_feat_model.load_state_dict(torch.load(hparams.checkpoint, map_location=torch.device('cpu')))
+                visual_feat_model.to(torch.device('cpu'))
             else:
                 visual_feat_model = hparams.current_model_detection
             visual_feat_model.eval()
@@ -122,12 +122,12 @@ if __name__ == '__main__':
 
         elif hparams.visual_feat_model_name == 'resnet50':
             visual_feat_model = torchvision.models.resnet50(pretrained=True)
-            visual_feat_model.to(torch.device('cuda'))
+            visual_feat_model.to(torch.device('cpu'))
             visual_feat_model.eval()
             layer = visual_feat_model._modules.get('avgpool')
         elif hparams.visual_feat_model_name == 'vgg19':
             visual_feat_model = torchvision.models.vgg19(pretrained=True)
-            visual_feat_model.to(torch.device('cuda'))
+            visual_feat_model.to(torch.device('cpu'))
             visual_feat_model.eval()
             layer = visual_feat_model._modules.get('avgpool')
         else:
@@ -159,6 +159,14 @@ if __name__ == '__main__':
     if hparams.data_name == 'issia':
         base_image_folder = '../../data/issia/frames/'
         base_annotation_folder = '../../data/issia/annotations/'
+        rescale_bbox = [0., 0.]
+    if hparams.data_name == 'TV_soccer':
+        base_image_folder = '../../data/TV_soccer/frames/'
+        base_annotation_folder = '../../data/TV_soccer/annotations/'
+        rescale_bbox = [0., 0.]
+    if hparams.data_name == 'revdb':
+        base_image_folder = '../../data/revdb/frames/'
+        base_annotation_folder = None
         rescale_bbox = [0., 0.]
     if hparams.data_name == 'SoccerNet':
         base_image_folder = '../../data/SoccerNet/sequences/'
@@ -199,7 +207,7 @@ if __name__ == '__main__':
         if not os.path.exists(output_folder):
             os.mkdir(output_folder)
         output_video_path = os.path.join(output_folder, "out.mp4")
-        output_csv_path = os.path.join(output_folder, "out.csv")
+        output_csv_path = os.path.join(output_folder, "out.json")
 
         if hparams.write_csv and os.path.exists(output_csv_path):
             continue

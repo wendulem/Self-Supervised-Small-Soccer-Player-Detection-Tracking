@@ -8,7 +8,9 @@
 *.xml
 *.txt
 *.html
-venv/
+*.mp4
+env/
 scripts/detection/runs/
 __pycache__/
 scripts/other_utils/lighttrack
+!requirements.txt

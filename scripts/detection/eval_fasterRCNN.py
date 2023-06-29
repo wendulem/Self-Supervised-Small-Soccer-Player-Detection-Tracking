@@ -8,7 +8,7 @@ import torchvision.transforms as T
 import torchvision.utils
 from faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
-from RPN import RPN
+from rpn import RegionProposalNetwork as RPN
 from faster_rcnn import FasterRCNN, fasterrcnn_resnet18_fpn, fasterrcnn_resnet50_fpn, fasterrcnn_detnet59_fpn, fasterrcnn_resnet8_fpn, fasterrcnn_resnet34_fpn
 from torchvision.models.detection.rpn import AnchorGenerator
 from soccer_dataset import SoccerDataset
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     model.to(device)
 
     if args.checkpoint is not None:
-        model.load_state_dict(torch.load(args.checkpoint))
+        model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device('cpu')))
 
     if args.eval_original:
         model = get_model_detection(args.model_name, False, args.backbone,
