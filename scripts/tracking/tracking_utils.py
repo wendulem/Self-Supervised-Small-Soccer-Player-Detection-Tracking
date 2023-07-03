@@ -212,7 +212,7 @@ def player_detection(image_path, rescale_img_factor, model_detection, thres_dete
     with torch.no_grad():
         im = Image.open(image_path).convert('RGB')
         im = rescale_img(im,rescale_img_factor)
-        x = [T.ToTensor()(im).to(torch.device('cpu'))]
+        x = [T.ToTensor()(im).to(torch.device('cuda'))]
         output, features = model_detection(x)
         output = output[0]
         scores = output['scores']
@@ -1197,7 +1197,7 @@ def get_visual_feat_imagenet(model,layer,data, rescale_img_factor):
         bbox = data['bbox']
         box = (bbox[0],bbox[1],bbox[2],bbox[3])
         patch = img.crop(box)
-        t_img = Variable(normalize(to_tensor(scaler(patch))).unsqueeze(0)).to(torch.device('cpu'))
+        t_img = Variable(normalize(to_tensor(scaler(patch))).unsqueeze(0)).to(torch.device('cuda'))
         my_embedding = torch.zeros(2048)
         def copy_data(m, i, o):
             my_embedding.copy_(o.data.squeeze())
@@ -1211,7 +1211,7 @@ def get_img_feat_FasterRCNN(model,img_path,rescale_img_factor):
     with torch.no_grad():
         image = Image.open(img_path).convert('RGB')
         image = rescale_img(image,rescale_img_factor)
-        image = [T.ToTensor()(image).to(torch.device('cpu'))]
+        image = [T.ToTensor()(image).to(torch.device('cuda'))]
         image,_ = model.transform(image, None)
         features = model.backbone(image.tensors)
         return(features,image.image_sizes)
@@ -1220,7 +1220,7 @@ def get_visual_feat_fasterRCNN(model,data,features,image_sizes,use_track_branch)
     with torch.no_grad():
         bbox = data['bbox']
         box = (float(bbox[0]),float(bbox[1]),float(bbox[2]),float(bbox[3]))
-        proposals = [torch.tensor([box]).to(torch.device('cpu'))]
+        proposals = [torch.tensor([box]).to(torch.device('cuda'))]
         if not use_track_branch :
             feat = model.roi_heads(features, proposals, image_sizes, get_feature_only=True)[0].cpu()
         else :
