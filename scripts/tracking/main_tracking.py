@@ -96,8 +96,8 @@ if __name__ == '__main__':
                                                   False, False, hparams.detection_score_thres, False,
                                                   hparams.use_soft_nms, anchor_sizes=hparams.anchor_sizes, use_context=hparams.use_context,
                                                   nms_thres=hparams.nms_thres, use_track_branch=hparams.use_track_branch_model)
-            model_detection.load_state_dict(torch.load(hparams.checkpoint, map_location=torch.device('cpu')))
-            model_detection.to(torch.device('cpu'))
+            model_detection.load_state_dict(torch.load(hparams.checkpoint)) # map_location=torch.device('cpu')
+            model_detection.to(torch.device('cuda'))
             model_detection.eval()
         else:
             model_detection = hparams.current_model_detection
@@ -113,8 +113,8 @@ if __name__ == '__main__':
                                                         hparams.use_soft_nms, anchor_sizes=hparams.anchor_sizes,
                                                         use_context=hparams.use_context, nms_thres=hparams.nms_thres,
                                                         use_track_branch=hparams.use_track_branch_model)
-                visual_feat_model.load_state_dict(torch.load(hparams.checkpoint, map_location=torch.device('cpu')))
-                visual_feat_model.to(torch.device('cpu'))
+                visual_feat_model.load_state_dict(torch.load(hparams.checkpoint)) # map_location=torch.device('cpu')
+                visual_feat_model.to(torch.device('cuda'))
             else:
                 visual_feat_model = hparams.current_model_detection
             visual_feat_model.eval()
@@ -122,12 +122,12 @@ if __name__ == '__main__':
 
         elif hparams.visual_feat_model_name == 'resnet50':
             visual_feat_model = torchvision.models.resnet50(pretrained=True)
-            visual_feat_model.to(torch.device('cpu'))
+            visual_feat_model.to(torch.device('cuda'))
             visual_feat_model.eval()
             layer = visual_feat_model._modules.get('avgpool')
         elif hparams.visual_feat_model_name == 'vgg19':
             visual_feat_model = torchvision.models.vgg19(pretrained=True)
-            visual_feat_model.to(torch.device('cpu'))
+            visual_feat_model.to(torch.device('cuda'))
             visual_feat_model.eval()
             layer = visual_feat_model._modules.get('avgpool')
         else:
