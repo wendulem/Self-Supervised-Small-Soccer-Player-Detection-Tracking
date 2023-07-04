@@ -315,7 +315,7 @@ if __name__ == '__main__':
     model.to(device)
 
     if args.checkpoint is not None:
-        model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load(args.checkpoint, map_location=torch.device('cuda')))
 
     if args.eval_original:
         model = get_model_detection(args.model_name, False, args.backbone,
